@@ -417,13 +417,13 @@ class CocoaMQTTFrameUnsubscribe: CocoaMQTTFrame {
 
 //MARK: - Buffer
 
-public protocol CocoaMQTTFrameBufferProtocol: class {
+protocol CocoaMQTTFrameBufferProtocol: class {
     func buffer(_ buffer: CocoaMQTTFrameBuffer, sendPublishFrame frame: CocoaMQTTFramePublish)
 }
 
-open class CocoaMQTTFrameBuffer: NSObject {
+class CocoaMQTTFrameBuffer: NSObject {
     
-    open weak var delegate: CocoaMQTTFrameBufferProtocol?
+    weak var delegate: CocoaMQTTFrameBufferProtocol?
     
     // flow control
     fileprivate var silos = [CocoaMQTTFramePublish]()
