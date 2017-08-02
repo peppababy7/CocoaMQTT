@@ -83,7 +83,7 @@ enum CocoaMQTTFrameType: UInt8 {
 /**
  * MQTT Frame
  */
-open class CocoaMQTTFrame {
+class CocoaMQTTFrame {
     /**
      * |--------------------------------------
      * | 7 6 5 4 |     3    |  2 1  | 0      |
@@ -286,7 +286,7 @@ class CocoaMQTTFrameConnect: CocoaMQTTFrame {
 /**
  * MQTT PUBLISH Frame
  */
-open class CocoaMQTTFramePublish: CocoaMQTTFrame {
+class CocoaMQTTFramePublish: CocoaMQTTFrame {
     var msgid: UInt16?
     var topic: String?
     var data: [UInt8]?
