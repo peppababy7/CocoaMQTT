@@ -207,10 +207,11 @@ public class CocoaMQTT: NSObject, CocoaMQTTClient, CocoaMQTTFrameBufferProtocol 
         retry = Retry(retry: retrySetting.retry, maxRetryCount: retrySetting.maxCount, step: retrySetting.step)
         super.init()
         buffer.delegate = self
+        printNotice("init")
     }
     
     deinit {
-        printNotice("CocoaMQTT deinit")
+        printNotice("deinit")
         pingpong?.reset()
         retry.reset()
         
@@ -265,14 +266,14 @@ public class CocoaMQTT: NSObject, CocoaMQTTClient, CocoaMQTTFrameBufferProtocol 
 
     @discardableResult
     public func connect() -> Bool {
-        printNotice("CocoaMQTT connect")
+        printNotice("connect")
         retry.reset()
         return internal_connect()
     }
     
     @discardableResult
     public func internal_connect() -> Bool {
-        printNotice("CocoaMQTT internal_connect")
+        printNotice("internal_connect")
         socket.setDelegate(self, delegateQueue: dispatchQueue)
         reader = CocoaMQTTReader(socket: socket, delegate: self)
         do {
@@ -288,7 +289,7 @@ public class CocoaMQTT: NSObject, CocoaMQTTClient, CocoaMQTTFrameBufferProtocol 
     /// Only can be called from outside. If you want to disconnect from inside framwork, call internal_disconnect()
     /// disconnect expectedly
     public func disconnect() {
-        printNotice("CocoaMQTT disconnect")
+        printNotice("disconnect")
         
         disconnectExpectedly = true
         internal_disconnect()
@@ -296,7 +297,7 @@ public class CocoaMQTT: NSObject, CocoaMQTTClient, CocoaMQTTFrameBufferProtocol 
     
     /// disconnect unexpectedly
     public func internal_disconnect() {
-        printNotice("CocoaMQTT internal_disconnect")
+        printNotice("internal_disconnect")
         
         send(CocoaMQTTFrame(type: CocoaMQTTFrameType.disconnect), tag: -0xE0)
         socket.disconnect()
@@ -359,7 +360,7 @@ public class CocoaMQTT: NSObject, CocoaMQTTClient, CocoaMQTTFrameBufferProtocol 
 
 extension CocoaMQTT: GCDAsyncSocketDelegate {
     public func socket(_ sock: GCDAsyncSocket, didConnectToHost host: String, port: UInt16) {
-        printNotice("Delegate.AsyncSock connected to \(host) : \(port)")
+        printNotice("AsyncSock connected to \(host) : \(port)")
         
         #if TARGET_OS_IPHONE
             if backgroundOnSocket {
@@ -384,18 +385,18 @@ extension CocoaMQTT: GCDAsyncSocketDelegate {
     }
 
     public func socket(_ sock: GCDAsyncSocket, didReceive trust: SecTrust, completionHandler: @escaping (Bool) -> Swift.Void) {
-        printNotice("Delegate.AsyncSock didReceiveTrust")
+        printNotice("AsyncSock didReceiveTrust")
         
         delegate?.mqtt!(self, didReceive: trust, completionHandler: completionHandler)
     }
 
     public func socketDidSecure(_ sock: GCDAsyncSocket) {
-        printNotice("Delegate.AsyncSock socketDidSecure")
+        printNotice("AsyncSock socketDidSecure")
         sendConnectFrame()
     }
 
     public func socket(_ sock: GCDAsyncSocket, didWriteDataWithTag tag: Int) {
-        printDebug("Socket write message with tag: \(tag)")
+        printDebug("AsyncSock Socket write message with tag: \(tag)")
     }
 
     public func socket(_ sock: GCDAsyncSocket, didRead data: Data, withTag tag: Int) {
@@ -414,6 +415,8 @@ extension CocoaMQTT: GCDAsyncSocketDelegate {
     }
 
     public func socketDidDisconnect(_ sock: GCDAsyncSocket, withError err: Error?) {
+        printNotice("AsyncSock didDisconect. Error: \(String(describing: err))")
+        
         pingpong?.reset()
         socket.delegate = nil
         connState = .disconnected
@@ -433,7 +436,7 @@ extension CocoaMQTT: GCDAsyncSocketDelegate {
 
 extension CocoaMQTT: CocoaMQTTReaderDelegate {
     internal func didReceiveConnAck(_ reader: CocoaMQTTReader, connack: UInt8) {
-        printNotice("CONNACK Received: \(connack)")
+        printNotice("Reader CONNACK Received: \(connack)")
 
         let ack: CocoaMQTTConnAck
         switch connack {
@@ -465,7 +468,7 @@ extension CocoaMQTT: CocoaMQTTReaderDelegate {
     }
 
     internal func didReceivePublish(_ reader: CocoaMQTTReader, message: CocoaMQTTMessage, id: UInt16) {
-        printDebug("PUBLISH Received from \(message.topic)")
+        printDebug("Reader PUBLISH Received from \(message.topic)")
         
         delegate?.mqtt(self, didReceiveMessage: message, id: id)
         switch message.qos {
@@ -476,34 +479,28 @@ extension CocoaMQTT: CocoaMQTTReaderDelegate {
     }
 
     internal func didReceivePubAck(_ reader: CocoaMQTTReader, msgid: UInt16) {
-        printDebug("PUBACK Received: \(msgid)")
-        
+        printDebug("Reader PUBACK Received: \(msgid)")
         buffer.sendSuccess(withMsgid: msgid)
         delegate?.mqtt(self, didPublishAck: msgid)
     }
     
     internal func didReceivePubRec(_ reader: CocoaMQTTReader, msgid: UInt16) {
-        printDebug("PUBREC Received: \(msgid)")
-
+        printDebug("Reader PUBREC Received: \(msgid)")
         puback(CocoaMQTTFrameType.pubrel, msgid: msgid)
     }
 
     internal func didReceivePubRel(_ reader: CocoaMQTTReader, msgid: UInt16) {
-        printDebug("PUBREL Received: \(msgid)")
-
+        printDebug("Reader PUBREL Received: \(msgid)")
         puback(CocoaMQTTFrameType.pubcomp, msgid: msgid)
     }
 
     internal func didReceivePubComp(_ reader: CocoaMQTTReader, msgid: UInt16) {
-        printDebug("PUBCOMP Received: \(msgid)")
-
+        printDebug("Reader PUBCOMP Received: \(msgid)")
         buffer.sendSuccess(withMsgid: msgid)
         delegate?.mqtt?(self, didPublishComplete: msgid)
     }
 
     internal func didReceiveSubAck(_ reader: CocoaMQTTReader, msgid: UInt16) {
-        printDebug("SUBACK Received: \(msgid)")
-        
         if let topicDict = subscriptionsWaitingAck.removeValue(forKey: msgid) {
             let topic = topicDict.first!.key
             
@@ -515,6 +512,7 @@ extension CocoaMQTT: CocoaMQTTReaderDelegate {
             }
             
             subscriptions[msgid] = topicDict
+            printInfo("SUBACK Received: \(topic)")
             delegate?.mqtt(self, didSubscribeTopic: topic)
         } else {
             printWarning("UNEXPECT SUBACK Received: \(msgid)")
@@ -522,8 +520,6 @@ extension CocoaMQTT: CocoaMQTTReaderDelegate {
     }
 
     internal func didReceiveUnsubAck(_ reader: CocoaMQTTReader, msgid: UInt16) {
-        printDebug("UNSUBACK Received: \(msgid)")
-        
         if let topicDict = unsubscriptionsWaitingAck.removeValue(forKey: msgid) {
             let topic = topicDict.first!.key
             
@@ -533,6 +529,7 @@ extension CocoaMQTT: CocoaMQTTReaderDelegate {
                 }
             }
             
+            printInfo("UNSUBACK Received: \(topic)")
             delegate?.mqtt(self, didUnsubscribeTopic: topic)
         } else {
             printWarning("UNEXPECT UNSUBACK Received: \(msgid)")
@@ -541,7 +538,6 @@ extension CocoaMQTT: CocoaMQTTReaderDelegate {
 
     internal func didReceivePong(_ reader: CocoaMQTTReader) {
         printDebug("PONG Received")
-
         pingpong?.pongTime = Date()
         delegate?.mqttDidReceivePong(self)
     }
@@ -708,11 +704,12 @@ private extension CocoaMQTT {
         // MARK: --- public methods
         
         func start(_ block: @escaping () -> Void) {
-            printNotice("Object.Retry start")
             guard retrying == false else {
-                printNotice("Object.Retry don't retry")
+                printWarning("Object.Retry don't retry")
                 return
             }
+            
+            printNotice("Object.Retry start")
             doRetry(block)
         }
         
@@ -784,9 +781,9 @@ private extension CocoaMQTT {
         }
         
         deinit {
+            printNotice("Object.PingPong deinit")
             delegate = nil
             reset()
-            printNotice("Object.PingPong deinit")
         }
         
         // MARK: --- API
@@ -873,7 +870,7 @@ public class CocoaMQTTLogger: NSObject {
     public func log(level: CocoaMQTTLoggerLevel, message: String) {
         if let limitLevel = delegate?.minLevel.rawValue,
             level.rawValue >= limitLevel {
-            delegate?.log(level: level, message: message)
+            delegate?.log(level: level, message: "CocoaMQTT " + message)
         }
     }
 }
