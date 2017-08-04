@@ -25,8 +25,6 @@
 		040997881C1B1529006B5A6D /* CocoaMQTTMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0409977C1C1B1529006B5A6D /* CocoaMQTTMessage.swift */; };
 		BFF666141F15C13D000F65AD /* CocoaAsyncSocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFF666121F15C13D000F65AD /* CocoaAsyncSocket.framework */; };
 		BFF666151F15C13D000F65AD /* SwiftyTimer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFF666131F15C13D000F65AD /* SwiftyTimer.framework */; };
-		BFF666171F15C16F000F65AD /* CocoaAsyncSocket.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BFF666121F15C13D000F65AD /* CocoaAsyncSocket.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		BFF666181F15C16F000F65AD /* SwiftyTimer.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BFF666131F15C13D000F65AD /* SwiftyTimer.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,20 +50,6 @@
 			remoteInfo = "CocoaMQTT tvOS";
 		};
 /* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		BFF666161F15C158000F65AD /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				BFF666171F15C16F000F65AD /* CocoaAsyncSocket.framework in CopyFiles */,
-				BFF666181F15C16F000F65AD /* SwiftyTimer.framework in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		0409970F1C1B0B96006B5A6D /* CocoaMQTT.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CocoaMQTT.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -276,8 +260,6 @@
 				0409972C1C1B0E06006B5A6D /* Frameworks */,
 				0409972D1C1B0E06006B5A6D /* Headers */,
 				0409972E1C1B0E06006B5A6D /* Resources */,
-				BFF666161F15C158000F65AD /* CopyFiles */,
-				BFA81C1C1F2B3E35008242A9 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -503,23 +485,6 @@
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
-		};
-		BFA81C1C1F2B3E35008242A9 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/Mac/SwiftyTimer.framework",
-				"$(SRCROOT)/Carthage/Build/Mac/CocoaAsyncSocket.framework",
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/SwiftyTimer.framework",
-				"$(DERIVED_FILE_DIR)/CocoaAsyncSocket.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "/usr/local/bin/carthage copy-frameworks";
 		};
 		C8A94FF458DC02345988410F /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
