@@ -175,9 +175,9 @@ public class CocoaMQTT: NSObject, CocoaMQTTClient, CocoaMQTTFrameBufferProtocol 
     fileprivate var pingpong: PingPong?
     
     // auto reconnect
-    public var retrySetting: (retry: Bool, maxCount: UInt, step: TimeInterval) = (true, 10, 1.2) {
+    public var retrySetting: (retry: Bool, maxCount: UInt, step: TimeInterval, fusingDepth: UInt, fusingDuration: TimeInterval) = (true, 10, 1.2, 60, 60) {
         didSet {
-            retry = Retry(retry: retrySetting.retry, maxRetryCount: retrySetting.maxCount, step: retrySetting.step)
+            retry = Retry(retry: retrySetting.retry, maxRetryCount: retrySetting.maxCount, step: retrySetting.step, fusingDepth: retrySetting.fusingDepth, fusingDuration: retrySetting.fusingDuration)
         }
     }
     public var retrying: Bool { return retry.retrying }
@@ -204,7 +204,7 @@ public class CocoaMQTT: NSObject, CocoaMQTTClient, CocoaMQTTFrameBufferProtocol 
         self.clientID = clientID
         self.host = host
         self.port = port
-        retry = Retry(retry: retrySetting.retry, maxRetryCount: retrySetting.maxCount, step: retrySetting.step)
+        retry = Retry(retry: retrySetting.retry, maxRetryCount: retrySetting.maxCount, step: retrySetting.step, fusingDepth: retrySetting.fusingDepth, fusingDuration: retrySetting.fusingDuration)
         super.init()
         buffer.delegate = self
         printNotice("init")
@@ -268,6 +268,7 @@ public class CocoaMQTT: NSObject, CocoaMQTTClient, CocoaMQTTFrameBufferProtocol 
     public func connect() -> Bool {
         printNotice("connect")
         retry.reset()
+        retry.resetFusing()
         return internal_connect()
     }
     
@@ -417,18 +418,26 @@ extension CocoaMQTT: GCDAsyncSocketDelegate {
     public func socketDidDisconnect(_ sock: GCDAsyncSocket, withError err: Error?) {
         printNotice("AsyncSock didDisconect. Error: \(String(describing: err))")
         
+        handleDisconnect(error: err)
+
+        DispatchQueue.main.async { [weak self] in
+            guard let `self` = self else { return }
+            
+            guard self.disconnectExpectedly == false else { self.retry.reset(); return }
+            
+            self.retry.start(success: { 
+                self.internal_connect()
+            }, failure: { (error) in
+                self.handleDisconnect(error: error)
+            })
+        }
+    }
+    
+    private func handleDisconnect(error: Error?) {
         pingpong?.reset()
         socket.delegate = nil
         connState = .disconnected
-        delegate?.mqttDidDisconnect(self, withError: err)
-
-        DispatchQueue.main.async { [weak self] in
-            if self?.disconnectExpectedly == false {
-                self?.retry.start { self?.internal_connect() }
-            } else {
-                self?.retry.reset()
-            }
-        }
+        delegate?.mqttDidDisconnect(self, withError: error)
     }
 }
 
@@ -674,12 +683,48 @@ internal class CocoaMQTTReader {
 
 private extension CocoaMQTT {
     
+    // MARK: -- RetryQueue
+    
+    class RetryQueue {
+        let depth: UInt
+        let duration: TimeInterval
+        
+        private var _queue = [Date]()
+     
+        init(depth: UInt, duration: TimeInterval) {
+            self.depth = depth
+            self.duration = duration
+            
+            printNotice("RetryQueue init. Depth: \(depth), duration: \(duration)")
+        }
+        
+        func append(timestamp: Date) throws {
+            printDebug("RetryQueue append timestamp: \(timestamp), now queue count: \(_queue.count), queue: \(_queue)")
+            
+            // remove expired record
+            _queue = _queue.filter { $0.addingTimeInterval(duration) >= timestamp }
+            
+            guard UInt(_queue.count) < depth else {
+                throw NSError(domain: "CocoaMQTT-RetryFusing", code: -1, userInfo: ["depth": depth, "duration": duration, "count": _queue.count])
+            }
+            
+            _queue.append(timestamp)
+        }
+        
+        func reset() {
+            printNotice("RetryQueue reset.")
+            
+            _queue = []
+        }
+    }
+    
     // MARK: -- Retry
     
     class Retry {
         let retry: Bool
         let maxRetryCount: UInt
         let step: TimeInterval
+        let fusing: RetryQueue
         
         var retriedCount: UInt = 0
         private var timer: Timer? = nil
@@ -687,12 +732,14 @@ private extension CocoaMQTT {
         
         // MARK: --- life cycle
         
-        init(retry needRetry: Bool, maxRetryCount maxCount: UInt, step s: TimeInterval) {
+        init(retry needRetry: Bool, maxRetryCount maxCount: UInt, step s: TimeInterval, fusingDepth: UInt, fusingDuration: TimeInterval) {
             retry = needRetry
             maxRetryCount = maxCount
             step = s
             retrying = false
-            printNotice("Object.Retry init. retry:\(retry), maxRetryCount:\(maxRetryCount), step:\(step), retrying:\(retrying)")
+            
+            fusing = RetryQueue(depth: fusingDepth, duration: fusingDuration)
+            printNotice("Object.Retry init. retry:\(retry), maxRetryCount:\(maxRetryCount), step:\(step), retrying:\(retrying), fusingDepth: \(fusingDepth), fusingDuration: \(fusingDuration)")
         }
         
         deinit {
@@ -703,14 +750,15 @@ private extension CocoaMQTT {
         
         // MARK: --- public methods
         
-        func start(_ block: @escaping () -> Void) {
+        func start(success: @escaping () -> Void, failure: @escaping (Error) -> Void) {
             guard retrying == false else {
                 printWarning("Object.Retry don't retry")
                 return
             }
             
             printNotice("Object.Retry start")
-            doRetry(block)
+            
+            doRetry(success: success, failure: failure)
         }
         
         func reset() {
@@ -722,25 +770,44 @@ private extension CocoaMQTT {
             retrying = false
         }
         
+        func resetFusing() {
+            printNotice("Object.Retry reset fusing!")
+            
+            fusing.reset()
+        }
+        
         // MARK: --- private
         
-        private func doRetry(_ block: @escaping () -> Void) {
+        private func doRetry(success: @escaping () -> Void, failure: @escaping (Error) -> Void) {
             timer?.invalidate()
             timer = nil
             
-            if retry && retriedCount < maxRetryCount {
-                retrying = true
-                
-                let delay = calcDelay(retried: retriedCount, step: step)
-                timer = Timer.after(delay) { [weak self] in
-                    block()
-                    self?.retriedCount += 1
-                    printNotice("Object.Retry retriedCount:\(String(describing: self?.retriedCount))")
-                    self?.doRetry(block)
-                }
-            } else {
+            // inner loop
+            guard retry && retriedCount < maxRetryCount else {
                 retrying = false
                 printError("Object.Retry interrupt retrying!")
+                failure(NSError(domain: "CocoaMQTT-MaxRetryCount", code: -2, userInfo: ["retry": retry, "retriedCount": retriedCount, "maxRetryCount": maxRetryCount]))
+                return
+            }
+            
+            let delay = calcDelay(retried: retriedCount, step: step)
+            
+            // fusing
+            do {
+                try fusing.append(timestamp: Date() + delay)
+            } catch {
+                retrying = false
+                printError("Fusing start, error: \(error)")
+                failure(error)
+                return
+            }
+            
+            retrying = true
+            timer = Timer.after(delay) { [weak self] in
+                success()
+                self?.retriedCount += 1
+                printNotice("Object.Retry retriedCount:\(String(describing: self?.retriedCount))")
+                self?.doRetry(success: success, failure: failure)
             }
         }
         
