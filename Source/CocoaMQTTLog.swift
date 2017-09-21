@@ -8,7 +8,7 @@
 
 import Foundation
 
-@objc public enum CocoaMQTTLoggerLevel: Int {
+public enum CocoaMQTTLoggerLevel: Int {
     case debug = 0, info, notice, warning, error
 }
 
