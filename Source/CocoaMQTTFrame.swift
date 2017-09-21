@@ -8,6 +8,17 @@
 
 import Foundation
 
+internal protocol CocoaMQTTClient {
+    var host: String { get set }
+    var port: UInt16 { get set }
+    var clientID: String { get }
+    var username: String? { get set }
+    var password: String? { get set }
+    var cleanSession: Bool { get set }
+    var keepAlive: UInt16 { get set }
+    var willMessage: CocoaMQTTWill? { get set }
+    var presence: CocoaMQTTPresenceType { get set }
+}
 
 /**
  * Encode and Decode big-endian UInt16
@@ -59,10 +70,7 @@ extension UInt8 {
     }
 }
 
-/**
- * MQTT Frame Type
- */
-enum CocoaMQTTFrameType: UInt8 {
+enum CocoaMQTTFrameType: UInt8, CustomStringConvertible {
     case reserved = 0x00
     case connect = 0x10
     case connack = 0x20
@@ -78,11 +86,29 @@ enum CocoaMQTTFrameType: UInt8 {
     case pingreq = 0xC0
     case pingresp = 0xD0
     case disconnect = 0xE0
+    
+    var description: String {
+        switch self {
+        case .reserved: return "RESERVED"
+        case .connect: return "CONNECT"
+        case .connack: return "CONNACK"
+        case .publish: return "PUBLISH"
+        case .puback: return "PUBACK"
+        case .pubrec: return "PUBREC"
+        case .pubrel: return "PUBREL"
+        case .pubcomp: return "PUBCOMP"
+        case .subscribe: return "SUBSCRIBE"
+        case .suback: return "SUBACK"
+        case .unsubscribe: return "UNSUB"
+        case .unsuback: return "UNSUBACK"
+        case .pingreq: return "PINGREQ"
+        case .pingresp: return "PINGRSP"
+        case .disconnect: return "DISCONN"
+        }
+    }
 }
 
-/**
- * MQTT Frame
- */
+
 class CocoaMQTTFrame {
     /**
      * |--------------------------------------
