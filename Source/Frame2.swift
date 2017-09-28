@@ -33,7 +33,7 @@ extension UInt16 {
         return UInt8(self & 0x00FF)
     }
 
-    fileprivate var hlBytes: [UInt8] {
+    var hlBytes: [UInt8] {
         return [highByte, lowByte]
     }
 }
@@ -52,9 +52,6 @@ extension String {
  * Bool to bit
  */
 extension Bool {
-    fileprivate var bit: UInt8 {
-        return self ? 1 : 0
-    }
 
     fileprivate init(bit: UInt8) {
         self = (bit == 0) ? false : true

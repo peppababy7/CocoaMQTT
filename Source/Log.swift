@@ -8,11 +8,13 @@
 
 import Foundation
 
-public enum CocoaMQTTLoggerLevel: Int {
-    case debug = 0, info, notice, warning, error
-}
-
-extension CocoaMQTTLoggerLevel: CustomStringConvertible {
+public enum CocoaMQTTLoggerLevel: Int, CustomStringConvertible {
+    case debug = 0
+    case info
+    case notice
+    case warning
+    case error
+    
     public var description: String {
         switch self {
         case .debug: return "Debug"

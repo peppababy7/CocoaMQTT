@@ -193,7 +193,8 @@ public class CocoaMQTT: NSObject, CocoaMQTTClient, CocoaMQTTFrameBufferProtocol 
 private extension CocoaMQTT {
     
     var _nextMessageID: UInt16 {
-        if _gmid == UInt16.max { _gmid = 0 }
+        guard _gmid < UInt16.max else { _gmid = 0; return _gmid }
+        
         _gmid += 1
         return _gmid
     }
@@ -713,16 +714,6 @@ public enum CocoaMQTTConnState: UInt8 {
     case connecting
     case connected
     case disconnected
-}
-
-public enum CocoaMQTTConnAck: UInt8 {
-    case accept  = 0
-    case unacceptableProtocolVersion
-    case identifierRejected
-    case serverUnavailable
-    case badUsernameOrPassword
-    case notAuthorized
-    case reserved
 }
 
 public enum CocoaMQTTPresenceType: UInt8 {
