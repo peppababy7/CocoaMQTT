@@ -8,17 +8,13 @@
 
 import Cocoa
 
-protocol ReadDelegate {
-    func reader(_ reader: Reader, shouldReadToLength length: UInt, tag: Int)
+protocol ReadDelegate: NSObjectProtocol {
+    func reader(_ reader: Reader, shouldReadLength length: UInt, tag: Int)
     
-    func reader(_ reader: Reader, didReceiveConnAck connAck: ConnAck)
-    func reader(_ reader: Reader, didReceivePublish message: String, msgId: UInt16)
-    func reader(_ reader: Reader, didReceivePubAck msgId: UInt16)
-    func reader(_ reader: Reader, didReceivePubRec msgId: UInt16)
-    func reader(_ reader: Reader, didReceivePubRel msgId: UInt16)
-    func reader(_ reader: Reader, didReceivePubComp msgId: UInt16)
-    func reader(_ reader: Reader, didReceiveSubAck msgId: UInt16)
-    func reader(_ reader: Reader, didReceiveUnsubAck msgId: UInt16)
+    func reader(_ reader: Reader, didReceiveConnAck conAck: ConnAck)
+    func reader(_ reader: Reader, didReceivePublish packet: PublishPacket)
+    
+    func reader(_ reader: Reader, didReceivePubSubAck type: PacketType, msgId: UInt16)
     
     func didReceivePong(_ reader: Reader)
 }
@@ -29,7 +25,11 @@ extension Reader {
     
     func start() {
         _buffer = Buffer()
-        delegate?.reader(self, shouldReadToLength: 1, tag: ReadTag.header.rawValue)
+        delegate?.reader(
+            self,
+            shouldReadLength: 1,
+            tag: ReadTag.header.rawValue
+        )
     }
     
     func fetchData(tag: Int, from data: Data) {
@@ -46,7 +46,7 @@ extension Reader {
         case .length:
             nextTag = _buffer.fetchLength(from: data)
             
-        case .payload:
+        case .data:
             nextTag = _buffer.fetchPayload(from: data)
         }
         
@@ -54,19 +54,66 @@ extension Reader {
         switch nextTag {
         case .header: length = 1
         case .length: length = 1
-        case .payload: length = _buffer.length
+        case .data: length = _buffer.length
         }
         
-        delegate?reader(self, shouldReadToLength: length, tag: nextTag)
+        delegate?.reader(
+            self,
+            shouldReadLength: length,
+            tag: nextTag.rawValue
+        )
     }
 }
 
 // MARK: -
 
 class Reader: NSObject {
+        
+    // MARK: -- properties
     
     weak var delegate: ReadDelegate?
-    private var _buffer = Buffer()
+    fileprivate var _buffer = Buffer()
+}
+
+// MARK: - delegate packet out
+
+private extension Reader {
+    
+    func _frameReady() {
+        guard let fixedHead = FixedHeader(rawValue: _buffer.header) else {
+            printError("FixedHead type error: \(_buffer.header)")
+            return
+        }
+        
+        switch fixedHead.packetType {
+        case .connack:
+            guard let packet = ConnAckPacket.decode(head: _buffer.header, data: _buffer.data) else { return }
+
+            delegate?.reader(self, didReceiveConnAck: packet.connAck)
+            
+        case .puback, .pubcomp, .pubrec, .pubrel, .suback, .unsuback:
+            guard let packet = PubAckPacket.decode(head: _buffer.header, data: _buffer.data) else { return }
+            
+            delegate?.reader(
+                self,
+                didReceivePubSubAck: packet.fixedHeader.packetType,
+                msgId: packet.msgid
+            )
+            
+        case .pingresp:
+            delegate?.didReceivePong(self)
+            
+        case .publish:
+            guard let packet = PublishPacket.decode(head: _buffer.header,data: _buffer.data) else { return }
+            
+            delegate?.reader(
+                self,
+                didReceivePublish: packet
+            )
+            
+        default: return
+        }
+    }
 }
 
 // MARK: - private
@@ -76,13 +123,13 @@ private extension Reader {
     enum ReadTag: Int {
         case header = 0
         case length
-        case payload
+        case data
     }
     
     class Buffer {
         private(set) var header = UInt8(0)
-        private(set) var length = UInt(0)
-        private(set) var payload = [UInt8]()
+        private(set) var length = UInt(0) // length of bytes
+        private(set) var data = [UInt8]()
         private(set) var multiply = UInt(1)
         
         private(set) var frameReady: Bool = false
@@ -93,12 +140,13 @@ private extension Reader {
         func fetchHeader(from data: Data) -> ReadTag {
             frameReady = false
             length = 0
-            payload = []
+            self.data = []
             multiply = 1
             
             var bytes = [UInt8]()
             data.copyBytes(to: &bytes, count: 1)
             header = bytes[0]
+            return .length
         }
         
         /**
@@ -111,9 +159,9 @@ private extension Reader {
             data.copyBytes(to: &bytes, count: 1)
             
             let byte = bytes[0]
-            length += (UInt)((Int)(byte & 127) * multiply)
+            length += (UInt)((UInt)(byte.digit) * multiply)
             
-            if byte & 0x80 == 0 // read lenght finished
+            if byte.finish == true
             {
                 if length == 0
                 {
@@ -121,7 +169,7 @@ private extension Reader {
                     return .header
                 } else
                 {
-                    return .payload
+                    return .data
                 }
             } else
             {
@@ -130,16 +178,15 @@ private extension Reader {
             }
         }
         
+        /**
+         return: read tag next time
+         */
         func fetchPayload(from data: Data) -> ReadTag {
-            // TODO: Linda -
+            self.data = [UInt8](repeating: 0, count: data.count)
+            data.copyBytes(to: &self.data, count: data.count)
+            
             return .header
         }
     }
 }
 
-
-private extension Reader {
-    func _frameReady() {
-        
-    }
-}

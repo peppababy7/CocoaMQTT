@@ -14,21 +14,12 @@
 		040997741C1B10AF006B5A6D /* CocoaMQTT.h in Headers */ = {isa = PBXBuildFile; fileRef = 040997711C1B1070006B5A6D /* CocoaMQTT.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		040997751C1B10B3006B5A6D /* CocoaMQTT.h in Headers */ = {isa = PBXBuildFile; fileRef = 040997711C1B1070006B5A6D /* CocoaMQTT.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		040997771C1B10B8006B5A6D /* CocoaMQTT.h in Headers */ = {isa = PBXBuildFile; fileRef = 040997711C1B1070006B5A6D /* CocoaMQTT.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		0409977D1C1B1529006B5A6D /* CocoaMQTT.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0409977A1C1B1529006B5A6D /* CocoaMQTT.swift */; };
-		0409977E1C1B1529006B5A6D /* CocoaMQTT.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0409977A1C1B1529006B5A6D /* CocoaMQTT.swift */; };
-		040997801C1B1529006B5A6D /* CocoaMQTT.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0409977A1C1B1529006B5A6D /* CocoaMQTT.swift */; };
-		040997811C1B1529006B5A6D /* Frame2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0409977B1C1B1529006B5A6D /* Frame2.swift */; };
-		040997821C1B1529006B5A6D /* Frame2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0409977B1C1B1529006B5A6D /* Frame2.swift */; };
-		040997841C1B1529006B5A6D /* Frame2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0409977B1C1B1529006B5A6D /* Frame2.swift */; };
-		040997851C1B1529006B5A6D /* Frame+Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0409977C1C1B1529006B5A6D /* Frame+Message.swift */; };
-		040997861C1B1529006B5A6D /* Frame+Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0409977C1C1B1529006B5A6D /* Frame+Message.swift */; };
-		040997881C1B1529006B5A6D /* Frame+Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0409977C1C1B1529006B5A6D /* Frame+Message.swift */; };
-		BF33F78C1F7C986200A17E71 /* CocoaMQTT2.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF33F78B1F7C986200A17E71 /* CocoaMQTT2.swift */; };
+		BF33F78C1F7C986200A17E71 /* SwiftMqttClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF33F78B1F7C986200A17E71 /* SwiftMqttClient.swift */; };
 		BF33F78E1F7CD53900A17E71 /* Reader.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF33F78D1F7CD53900A17E71 /* Reader.swift */; };
 		BF33F7931F7CF1B200A17E71 /* Reader.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF33F78D1F7CD53900A17E71 /* Reader.swift */; };
 		BF33F7941F7CF1B300A17E71 /* Reader.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF33F78D1F7CD53900A17E71 /* Reader.swift */; };
-		BF33F7951F7CF1BD00A17E71 /* CocoaMQTT2.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF33F78B1F7C986200A17E71 /* CocoaMQTT2.swift */; };
-		BF33F7961F7CF1BE00A17E71 /* CocoaMQTT2.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF33F78B1F7C986200A17E71 /* CocoaMQTT2.swift */; };
+		BF33F7951F7CF1BD00A17E71 /* SwiftMqttClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF33F78B1F7C986200A17E71 /* SwiftMqttClient.swift */; };
+		BF33F7961F7CF1BE00A17E71 /* SwiftMqttClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF33F78B1F7C986200A17E71 /* SwiftMqttClient.swift */; };
 		BF33F7981F7CF20100A17E71 /* PingPong.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF33F7971F7CF20100A17E71 /* PingPong.swift */; };
 		BF33F7991F7CF22000A17E71 /* PingPong.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF33F7971F7CF20100A17E71 /* PingPong.swift */; };
 		BF33F79A1F7CF22100A17E71 /* PingPong.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF33F7971F7CF20100A17E71 /* PingPong.swift */; };
@@ -41,9 +32,6 @@
 		BF6E39461F7B4F16000AAC9E /* Packet.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6E39451F7B4F16000AAC9E /* Packet.swift */; };
 		BF6E39471F7B4F16000AAC9E /* Packet.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6E39451F7B4F16000AAC9E /* Packet.swift */; };
 		BF6E39481F7B4F16000AAC9E /* Packet.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6E39451F7B4F16000AAC9E /* Packet.swift */; };
-		BFA6C6D21F7390B100A2CEF2 /* Reader2.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA6C6D11F7390B100A2CEF2 /* Reader2.swift */; };
-		BFA6C6D31F7390B100A2CEF2 /* Reader2.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA6C6D11F7390B100A2CEF2 /* Reader2.swift */; };
-		BFA6C6D41F7390B100A2CEF2 /* Reader2.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA6C6D11F7390B100A2CEF2 /* Reader2.swift */; };
 		BFA6C6D61F7391B700A2CEF2 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA6C6D51F7391B700A2CEF2 /* Log.swift */; };
 		BFA6C6D71F7391B700A2CEF2 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA6C6D51F7391B700A2CEF2 /* Log.swift */; };
 		BFA6C6D81F7391B700A2CEF2 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA6C6D51F7391B700A2CEF2 /* Log.swift */; };
@@ -87,15 +75,12 @@
 		040997711C1B1070006B5A6D /* CocoaMQTT.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CocoaMQTT.h; sourceTree = "<group>"; };
 		040997721C1B1070006B5A6D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0409977A1C1B1529006B5A6D /* CocoaMQTT.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaMQTT.swift; sourceTree = "<group>"; };
-		0409977B1C1B1529006B5A6D /* Frame2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Frame2.swift; sourceTree = "<group>"; };
-		0409977C1C1B1529006B5A6D /* Frame+Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Frame+Message.swift"; sourceTree = "<group>"; };
-		BF33F78B1F7C986200A17E71 /* CocoaMQTT2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaMQTT2.swift; sourceTree = "<group>"; };
+		BF33F78B1F7C986200A17E71 /* SwiftMqttClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftMqttClient.swift; sourceTree = "<group>"; };
 		BF33F78D1F7CD53900A17E71 /* Reader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reader.swift; sourceTree = "<group>"; };
 		BF33F7971F7CF20100A17E71 /* PingPong.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PingPong.swift; sourceTree = "<group>"; };
 		BF3B12511F7BBBBE00A86B02 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		BF3B12531F7BBCB000A86B02 /* Enums.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
 		BF6E39451F7B4F16000AAC9E /* Packet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Packet.swift; sourceTree = "<group>"; };
-		BFA6C6D11F7390B100A2CEF2 /* Reader2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reader2.swift; sourceTree = "<group>"; };
 		BFA6C6D51F7391B700A2CEF2 /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		BFF666121F15C13D000F65AD /* CocoaAsyncSocket.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CocoaAsyncSocket.framework; path = Carthage/Build/Mac/CocoaAsyncSocket.framework; sourceTree = "<group>"; };
 		BFF666131F15C13D000F65AD /* SwiftyTimer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyTimer.framework; path = Carthage/Build/Mac/SwiftyTimer.framework; sourceTree = "<group>"; };
@@ -188,15 +173,12 @@
 			isa = PBXGroup;
 			children = (
 				0409977A1C1B1529006B5A6D /* CocoaMQTT.swift */,
-				BFA6C6D51F7391B700A2CEF2 /* Log.swift */,
-				0409977B1C1B1529006B5A6D /* Frame2.swift */,
-				0409977C1C1B1529006B5A6D /* Frame+Message.swift */,
 				040997791C1B14F0006B5A6D /* Supporting Files */,
+				BF33F78B1F7C986200A17E71 /* SwiftMqttClient.swift */,
 				BF6E39451F7B4F16000AAC9E /* Packet.swift */,
-				BF33F78B1F7C986200A17E71 /* CocoaMQTT2.swift */,
 				BF33F7971F7CF20100A17E71 /* PingPong.swift */,
-				BFA6C6D11F7390B100A2CEF2 /* Reader2.swift */,
 				BF3B12511F7BBBBE00A86B02 /* Utils.swift */,
+				BFA6C6D51F7391B700A2CEF2 /* Log.swift */,
 				BF33F78D1F7CD53900A17E71 /* Reader.swift */,
 				BF3B12531F7BBCB000A86B02 /* Enums.swift */,
 			);
@@ -579,14 +561,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				BFA6C6D61F7391B700A2CEF2 /* Log.swift in Sources */,
-				0409977D1C1B1529006B5A6D /* CocoaMQTT.swift in Sources */,
 				BF33F7981F7CF20100A17E71 /* PingPong.swift in Sources */,
 				BF33F78E1F7CD53900A17E71 /* Reader.swift in Sources */,
-				040997851C1B1529006B5A6D /* Frame+Message.swift in Sources */,
-				BF33F78C1F7C986200A17E71 /* CocoaMQTT2.swift in Sources */,
+				BF33F78C1F7C986200A17E71 /* SwiftMqttClient.swift in Sources */,
 				BF6E39461F7B4F16000AAC9E /* Packet.swift in Sources */,
-				BFA6C6D21F7390B100A2CEF2 /* Reader2.swift in Sources */,
-				040997811C1B1529006B5A6D /* Frame2.swift in Sources */,
 				BF3B12541F7BBCB000A86B02 /* Enums.swift in Sources */,
 				BF3B12521F7BBBBE00A86B02 /* Utils.swift in Sources */,
 			);
@@ -607,13 +585,9 @@
 				BFA6C6D71F7391B700A2CEF2 /* Log.swift in Sources */,
 				BF33F7991F7CF22000A17E71 /* PingPong.swift in Sources */,
 				BF33F7931F7CF1B200A17E71 /* Reader.swift in Sources */,
-				0409977E1C1B1529006B5A6D /* CocoaMQTT.swift in Sources */,
-				040997861C1B1529006B5A6D /* Frame+Message.swift in Sources */,
 				BF6E39471F7B4F16000AAC9E /* Packet.swift in Sources */,
-				BFA6C6D31F7390B100A2CEF2 /* Reader2.swift in Sources */,
-				040997821C1B1529006B5A6D /* Frame2.swift in Sources */,
 				BF3B12571F7BBD1200A86B02 /* Enums.swift in Sources */,
-				BF33F7951F7CF1BD00A17E71 /* CocoaMQTT2.swift in Sources */,
+				BF33F7951F7CF1BD00A17E71 /* SwiftMqttClient.swift in Sources */,
 				BF3B12551F7BBD0E00A86B02 /* Utils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -632,13 +606,9 @@
 				BFA6C6D81F7391B700A2CEF2 /* Log.swift in Sources */,
 				BF33F79A1F7CF22100A17E71 /* PingPong.swift in Sources */,
 				BF33F7941F7CF1B300A17E71 /* Reader.swift in Sources */,
-				040997801C1B1529006B5A6D /* CocoaMQTT.swift in Sources */,
-				040997881C1B1529006B5A6D /* Frame+Message.swift in Sources */,
 				BF6E39481F7B4F16000AAC9E /* Packet.swift in Sources */,
-				BFA6C6D41F7390B100A2CEF2 /* Reader2.swift in Sources */,
-				040997841C1B1529006B5A6D /* Frame2.swift in Sources */,
 				BF3B12581F7BBD1200A86B02 /* Enums.swift in Sources */,
-				BF33F7961F7CF1BE00A17E71 /* CocoaMQTT2.swift in Sources */,
+				BF33F7961F7CF1BE00A17E71 /* SwiftMqttClient.swift in Sources */,
 				BF3B12561F7BBD0F00A86B02 /* Utils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

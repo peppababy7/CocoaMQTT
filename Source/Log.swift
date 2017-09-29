@@ -8,52 +8,38 @@
 
 import Foundation
 
-public enum CocoaMQTTLoggerLevel: Int, CustomStringConvertible {
-    case debug = 0
-    case info
-    case notice
-    case warning
-    case error
+protocol LogProtocol: NSObjectProtocol {
+    var minLevel: Log.Level { get }
+    func log(level: Log.Level, message: String)
+}
+
+class Log: NSObject {
     
-    public var description: String {
-        switch self {
-        case .debug: return "Debug"
-        case .info: return "Info"
-        case .notice: return "Notice"
-        case .warning: return "Warning"
-        case .error: return "Error"
-        }
-    }
-}
-
-public class CocoaMQTTLogger: NSObject {
-    static let shared = CocoaMQTTLogger()
-    weak var delegate: CocoaMqttLogProtocol?
+    static var shared: Log = Log()
     
-    public func log(level: CocoaMQTTLoggerLevel, message: String) {
-        if let limitLevel = delegate?.minLevel.rawValue,
-            level.rawValue >= limitLevel {
-            delegate?.log(level: level, message: "CocoaMQTT " + message)
-        }
+    enum Level: Int {
+        case debug = 0
+        case info
+        case notice
+        case warning
+        case error
     }
+    
+    func log(level: Level, message: String) {
+        guard let minlevel = delegate?.minLevel, level.rawValue >= minlevel.rawValue else { return }
+        
+        delegate?.log(level: level, message: message)
+    }
+    
+    weak var delegate: LogProtocol?
 }
 
-func printDebug(_ message: String) {
-    CocoaMQTTLogger.shared.log(level: .debug, message: message)
-}
+func printDebug(_ message: String) { Log.shared.log(level: .debug, message: message) }
 
-func printInfo(_ message: String) {
-    CocoaMQTTLogger.shared.log(level: .info, message: message)
-}
+func printInfo(_ message: String) { Log.shared.log(level: .info, message: message) }
 
-func printNotice(_ message: String) {
-    CocoaMQTTLogger.shared.log(level: .notice, message: message)
-}
+func printNotice(_ message: String) { Log.shared.log(level: .notice, message: message) }
 
-func printWarning(_ message: String) {
-    CocoaMQTTLogger.shared.log(level: .warning, message: message)
-}
+func printWarning(_ message: String) { Log.shared.log(level: .warning, message: message) }
 
-func printError(_ message: String) {
-    CocoaMQTTLogger.shared.log(level: .error, message: message)
-}
+func printError(_ message: String) { Log.shared.log(level: .error, message: message) }

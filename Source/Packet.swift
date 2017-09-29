@@ -167,6 +167,65 @@ final class ConnectPacket: Encoder {
     private let keepAlive: UInt16 // seconds
 }
 
+final class ConnAckPacket: DecodeProtocol {
+    
+    static func decode(head: UInt8, data: [UInt8]) -> ConnAckPacket? {
+        guard let fixedheader = FixedHeader(rawValue: head),
+            fixedheader.packetType == .connack else {
+            printError("FixedHeader error: \(head)")
+            return nil
+        }
+        
+        guard data.count == 2, let connack = ConnAck(rawValue: data[1]) else {
+            printError("ConnAck decode error: \(data[1])")
+            return nil
+        }
+        
+        return ConnAckPacket(fixedhead: fixedheader, connack: connack)
+    }
+    
+    init(fixedhead: FixedHeader, connack: ConnAck) {
+        self.fixedHeader = fixedhead
+        self.connAck = connack
+    }
+    
+    let fixedHeader: FixedHeader
+    let connAck: ConnAck
+}
+
+final class PubSubAckPacket: DecodeProtocol {
+    
+    static func decode(head: UInt8, data: [UInt8]) -> PubSubAckPacket? {
+        guard let fixedheader = FixedHeader(rawValue: head),
+            fixedheader.packetType == .puback,
+            fixedheader.packetType == .pubrec,
+            fixedheader.packetType == .pubrel,
+            fixedheader.packetType == .pubcomp,
+            fixedheader.packetType == .suback,
+            fixedheader.packetType == .unsuback else {
+                printError("FixedHeader error: \(head)")
+                return nil
+        }
+        
+        guard data.count >= 2 else {
+            printError("data count error: \(data.count)")
+            return nil
+        }
+        
+        let msgid = UInt16(data[0]) << 8 + UInt16(data[1])
+        
+        return PubSubAckPacket(fixedheader: fixedheader, msgid: msgid)
+    }
+    
+    init(fixedheader: FixedHeader, msgid: UInt16) {
+        self.fixedHeader = fixedheader
+        self.msgid = msgid
+    }
+    
+    let fixedHeader: FixedHeader
+    let msgid: UInt16
+}
+
 // MARK: -
 
 final class PingPacket: Encoder {
@@ -231,12 +290,14 @@ final class PublishPacket: Encoder, DecodeProtocol {
         )
     }
     
-    init(
+    init?(
         fixedhead: FixedHeader,
         msgid: UInt16,
         topic: String,
         payload: [UInt8]
         ) {
+        guard fixedhead.packetType == .publish else { return nil }
+        
         self.fixedHeader = fixedhead
         self.msgid = msgid
         self.topic = topic
@@ -268,33 +329,29 @@ final class PubAckPacket: DecodeProtocol {
         let lsb = data[1]
         let msgid = UInt16(msb) << 8 + UInt16(lsb)
         
-        return PubAckPacket(
-            head: fixedhead,
-            msgid: msgid
-        )
+        return PubAckPacket(fixedhead: fixedhead, msgid: msgid)
     }
     
-    init(
-        head: FixedHeader,
-        msgid: UInt16
-        ) {
-        self.head = head
+    init(fixedhead: FixedHeader, msgid: UInt16) {
+        self.fixedHeader = fixedhead
         self.msgid = msgid
     }
     
-    let head: FixedHeader
+    let fixedHeader: FixedHeader
     let msgid: UInt16
 }
 
 // MARK: -
 
 final class SubscribePacket: Encoder {
-    init(
+    init?(
         fixedHeader: FixedHeader,
         msgid: UInt16,
         topic: String,
         reqos: QoS
         ) {
+        guard fixedHeader.packetType == .subscribe else { return nil }
+        
         self.fixedHeader = fixedHeader
         self.msgid = msgid
         self.variableHeader = msgid.hlBytes
@@ -318,11 +375,13 @@ final class SubscribePacket: Encoder {
 
 final class UnsubscribePacket: Encoder {
     
-    init(
+    init?(
         fixedHeader: FixedHeader,
         msgid: UInt16,
         topic: String
         ) {
+        guard fixedHeader.packetType == .unsubscribe else { return nil }
+        
         self.fixedHeader = fixedHeader
         self.msgid = msgid
         self.variableHeader = msgid.hlBytes

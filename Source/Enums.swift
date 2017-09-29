@@ -14,7 +14,7 @@ public enum QoS: UInt8 {
     case qos2 = 2
 }
 
-public enum ConnectAck: UInt8 {
+public enum ConnAck: UInt8 {
     case accept  = 0
     case unacceptableProtocolVersion
     case identifierRejected
@@ -45,4 +45,10 @@ enum PacketType: UInt8 {
 enum PresenceType: UInt8 {
     case away = 0
     case online = 1
+}
+
+enum MqttClientError: Error {
+    case stateError
+    case paraError
+    case connAckError
 }
