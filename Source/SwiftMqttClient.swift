@@ -13,8 +13,6 @@ import CocoaAsyncSocket
 // MARK: -
 
 protocol SwiftMqttClientDelegate: NSObjectProtocol {
-    func mqtt(_ mqtt: SwiftMqttClient, willConnectToHost host: String, port: UInt16)
-    
     func mqtt(_ mqtt: SwiftMqttClient, didConnectToHost host: String, port: UInt16)
     func mqtt(_ mqtt: SwiftMqttClient, didConnectWithError error: MqttClientError)
     func mqtt(_ mqtt: SwiftMqttClient, didDisconnectWithError error: MqttClientError?)
@@ -33,20 +31,20 @@ protocol SwiftMqttClientDelegate: NSObjectProtocol {
 extension SwiftMqttClient {
     
     func connect() {
-        _delegate?.mqtt(self, willConnectToHost: host, port: port)
-        
         _initialize()
         
         do {
             try _socket.connect(toHost: host, onPort: port)
-            connState = .connecting
+            state = .connecting
         } catch {
+            state = .disconnected
             _delegate?.mqtt(self, didConnectWithError: error)
         }
     }
     
     func disconnect() {
-        let bytes = FixedHeader(type: .disconnect, dup: falses, qos: .qos0, retained: false).encode()
+        let bytes = FixedHeader(type: .disconnect, dup: false,
+                                qos: .qos0, retained: false).encode()
         _socket.write(Data(bytes: bytes, count: bytes.count), withTimeout: -1, tag: 0)
         
         _socket.disconnect()
@@ -69,7 +67,8 @@ extension SwiftMqttClient {
                                    qos: qos, retained: retained),
             msgid: _msgid,
             topic: topic,
-            payload: [UInt8](message.utf8)) else {
+            payload: [UInt8](message.utf8)
+            ) else {
             _delegate?.mqtt(self, didPublishWithError: .paraError)
             return
         }
@@ -197,6 +196,8 @@ final class SwiftMqttClient: NSObject {
     fileprivate weak var _delegate: SwiftMqttClientDelegate?
     
     fileprivate var _msgid: UInt16 = 123 // TODO: Linda - should plus
+    
+    fileprivate var _
 }
 
 // MARK: - GCDAsyncSocketDelegate
@@ -275,7 +276,7 @@ extension SwiftMqttClient: ReadDelegate {
         default:
             state = .disconnected
             _delegate?.mqtt(self, didConnectWithError: .connAckError)
-            _disconnect()
+            disconnect()
             return
         }
     }
@@ -285,7 +286,11 @@ extension SwiftMqttClient: ReadDelegate {
     }
     
     func reader(_ reader: Reader, didReceivePubSubAck type: PacketType, msgId: UInt16) {
-        
+        switch type {
+        case .suback: // TODO: Linda -
+            _delegate?.mqtt(<#T##mqtt: SwiftMqttClient##SwiftMqttClient#>, didSubscribeTopic: <#T##String#>)
+        default: return // TODO: Linda - handle publish
+        }
     }
     
     func didReceivePong(_ reader: Reader){
@@ -298,7 +303,7 @@ extension SwiftMqttClient: ReadDelegate {
 private extension SwiftMqttClient {
     
     func _initialize() {
-        _socket.setDelegate(nil)
+        _socket.delegate = nil
         _socket = GCDAsyncSocket()
         _socket.setDelegate(self, delegateQueue: _queue)
         
@@ -314,10 +319,6 @@ private extension SwiftMqttClient {
     func _handleSocketConnect() {
         
         _reader.start()
-    }
-    
-    func _disconnect() {
-        
     }
 }
 
