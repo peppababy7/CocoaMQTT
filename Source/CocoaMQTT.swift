@@ -416,26 +416,26 @@ extension CocoaMQTT: GCDAsyncSocketDelegate {
     }
 
     public func socketDidDisconnect(_ sock: GCDAsyncSocket, withError err: Error?) {
-        printNotice("AsyncSock didDisconect. Error: \(String(describing: err))")
+        printNotice("AsyncSock didDisconnect. Error: \(String(describing: err))")
         
-        handleDisconnect(error: err)
-
         DispatchQueue.main.async { [weak self] in
             guard let `self` = self else { return }
             
             guard self.disconnectExpectedly == false else { self.retry.reset(); return }
             
-            self.retry.start(success: { 
+            self.retry.start(success: {
+                self.handleDisconnect(with: err)
                 self.internal_connect()
             }, failure: { (error) in
-                self.handleDisconnect(error: error)
+                self.handleDisconnect(with: error)
             })
         }
     }
     
-    private func handleDisconnect(error: Error?) {
+    private func handleDisconnect(with error: Error?) {
         pingpong?.reset()
         socket.delegate = nil
+        socket = GCDAsyncSocket()
         connState = .disconnected
         delegate?.mqttDidDisconnect(self, withError: error)
     }
@@ -521,7 +521,7 @@ extension CocoaMQTT: CocoaMQTTReaderDelegate {
             }
             
             subscriptions[msgid] = topicDict
-            printInfo("SUBACK Received: \(topic)")
+            printDebug("SUBACK Received: \(topic)")
             delegate?.mqtt(self, didSubscribeTopic: topic)
         } else {
             printWarning("UNEXPECT SUBACK Received: \(msgid)")
@@ -538,7 +538,7 @@ extension CocoaMQTT: CocoaMQTTReaderDelegate {
                 }
             }
             
-            printInfo("UNSUBACK Received: \(topic)")
+            printDebug("UNSUBACK Received: \(topic)")
             delegate?.mqtt(self, didUnsubscribeTopic: topic)
         } else {
             printWarning("UNEXPECT UNSUBACK Received: \(msgid)")
@@ -751,10 +751,7 @@ private extension CocoaMQTT {
         // MARK: --- public methods
         
         func start(success: @escaping () -> Void, failure: @escaping (Error) -> Void) {
-            guard retrying == false else {
-                printWarning("Object.Retry don't retry")
-                return
-            }
+            guard retrying == false else { return }
             
             printNotice("Object.Retry start")
             
@@ -771,8 +768,6 @@ private extension CocoaMQTT {
         }
         
         func resetFusing() {
-            printNotice("Object.Retry reset fusing!")
-            
             fusing.reset()
         }
         
@@ -824,7 +819,7 @@ private extension CocoaMQTT {
     class PingPong {
         var pongTime: Date? {
             didSet {
-                printInfo("Object.PingPong pongTime:\(String(describing: pongTime))")
+                printDebug("Object.PingPong pongTime:\(String(describing: pongTime))")
                 if checkPongExpired(pingTime: pingTime, pongTime: self.pongTime, now: Date(), timeOut: timeInterval) == true {
                     self.delegate?.pongDidTimeOut()
                 }
@@ -861,7 +856,7 @@ private extension CocoaMQTT {
             // refresh self's presence status immediately
             delegate?.ping()
             pingTime = Date()
-            printInfo("Object.PingPong pingTime:\(String(describing: self.pingTime))")
+            printDebug("Object.PingPong pingTime:\(String(describing: self.pingTime))")
             
             timer?.invalidate()
             timer = nil
@@ -880,7 +875,7 @@ private extension CocoaMQTT {
                 } else {
                     self?.delegate?.ping()
                     self?.pingTime = Date()
-                    printInfo("Object.PingPong pingTime:\(String(describing: self?.pingTime))")
+                    printDebug("Object.PingPong pingTime:\(String(describing: self?.pingTime))")
                 }
             }
         }
