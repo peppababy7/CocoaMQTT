@@ -269,12 +269,15 @@ public class CocoaMQTT: NSObject, CocoaMQTTClient, CocoaMQTTFrameBufferProtocol 
         printNotice("connect")
         retry.reset()
         retry.resetFusing()
+        pingpong?.reset()
         return internal_connect()
     }
     
     @discardableResult
     public func internal_connect() -> Bool {
         printNotice("internal_connect")
+        socket.delegate = nil
+        socket = GCDAsyncSocket()
         socket.setDelegate(self, delegateQueue: dispatchQueue)
         reader = CocoaMQTTReader(socket: socket, delegate: self)
         do {
@@ -434,8 +437,6 @@ extension CocoaMQTT: GCDAsyncSocketDelegate {
     
     private func handleDisconnect(with error: Error?) {
         pingpong?.reset()
-        socket.delegate = nil
-        socket = GCDAsyncSocket()
         connState = .disconnected
         delegate?.mqttDidDisconnect(self, withError: error)
     }
