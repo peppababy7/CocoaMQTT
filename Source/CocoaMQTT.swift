@@ -44,14 +44,6 @@ import SwiftyTimer
 }
 
 /**
- * self presence status
- */
-@objc public enum CocoaMQTTPresenceType: UInt8 {
-    case away = 0
-    case online = 1
-}
-
-/**
  * asyncsocket read tag
  */
 fileprivate enum CocoaMQTTReadTag: Int {
@@ -102,7 +94,7 @@ internal protocol CocoaMQTTClient {
     var cleanSession: Bool { get set }
     var keepAlive: UInt16 { get set }
     var willMessage: CocoaMQTTWill? { get set }
-    var presence: CocoaMQTTPresenceType { get set }
+    var presence: UInt8 { get set }
     
     func connect() -> Bool
     func disconnect()
@@ -157,7 +149,7 @@ public class CocoaMQTT: NSObject, CocoaMQTTClient, CocoaMQTTFrameBufferProtocol 
     public var secureMQTT = false
     public var cleanSession = true
     public var willMessage: CocoaMQTTWill?
-    public var presence: CocoaMQTTPresenceType = .away
+    public var presence: UInt8 = 1
     public weak var delegate: CocoaMQTTDelegate? {
         didSet { CocoaMQTTLogger.shared.delegate = delegate }
     }
@@ -309,7 +301,7 @@ public class CocoaMQTT: NSObject, CocoaMQTTClient, CocoaMQTTFrameBufferProtocol 
     
     public func ping() {
         printDebug("Ping")
-        send(CocoaMQTTFrame(type: CocoaMQTTFrameType.pingreq, payload: [self.presence.rawValue]), tag: -0xC0)
+        send(CocoaMQTTFrame(type: CocoaMQTTFrameType.pingreq, payload: [self.presence]), tag: -0xC0)
         self.delegate?.mqttDidPing(self)
     }
 
