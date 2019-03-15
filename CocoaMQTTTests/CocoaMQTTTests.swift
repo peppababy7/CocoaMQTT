@@ -101,11 +101,11 @@ class CocoaMQTTTests: XCTestCase, CocoaMQTTDelegate {
     func mqtt(_ mqtt: CocoaMQTT, didConnect host: String, port: Int) {
     }
     
-    func mqtt(_ mqtt: CocoaMQTT, didConnectAck ack: CocoaMQTTConnAck) {
+    func mqtt(_ mqtt: CocoaMQTT, didConnectAck ack: ConnAck) {
         connExp?.fulfill()
     }
     
-    func mqtt(_ mqtt: CocoaMQTT, didPublishMessage message: CocoaMQTTMessage, id: UInt16) {
+    func mqtt(_ mqtt: CocoaMQTT, didPublishMessage message: Message, id: UInt16) {
         
     }
     
@@ -117,7 +117,7 @@ class CocoaMQTTTests: XCTestCase, CocoaMQTTDelegate {
         pubQos2Exp?.fulfill()
     }
     
-    func mqtt(_ mqtt: CocoaMQTT, didReceiveMessage message: CocoaMQTTMessage, id: UInt16 ) {
+    func mqtt(_ mqtt: CocoaMQTT, didReceiveMessage message: Message, id: UInt16 ) {
         let string = message.string!
         if string == "0" {
             res0Exp?.fulfill()

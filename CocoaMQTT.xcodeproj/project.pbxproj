@@ -17,14 +17,23 @@
 		0409977D1C1B1529006B5A6D /* CocoaMQTT.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0409977A1C1B1529006B5A6D /* CocoaMQTT.swift */; };
 		0409977E1C1B1529006B5A6D /* CocoaMQTT.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0409977A1C1B1529006B5A6D /* CocoaMQTT.swift */; };
 		040997801C1B1529006B5A6D /* CocoaMQTT.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0409977A1C1B1529006B5A6D /* CocoaMQTT.swift */; };
-		040997811C1B1529006B5A6D /* CocoaMQTTFrame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0409977B1C1B1529006B5A6D /* CocoaMQTTFrame.swift */; };
-		040997821C1B1529006B5A6D /* CocoaMQTTFrame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0409977B1C1B1529006B5A6D /* CocoaMQTTFrame.swift */; };
-		040997841C1B1529006B5A6D /* CocoaMQTTFrame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0409977B1C1B1529006B5A6D /* CocoaMQTTFrame.swift */; };
-		040997851C1B1529006B5A6D /* CocoaMQTTMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0409977C1C1B1529006B5A6D /* CocoaMQTTMessage.swift */; };
-		040997861C1B1529006B5A6D /* CocoaMQTTMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0409977C1C1B1529006B5A6D /* CocoaMQTTMessage.swift */; };
-		040997881C1B1529006B5A6D /* CocoaMQTTMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0409977C1C1B1529006B5A6D /* CocoaMQTTMessage.swift */; };
+		040997811C1B1529006B5A6D /* CocoaMQTT+Frame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0409977B1C1B1529006B5A6D /* CocoaMQTT+Frame.swift */; };
+		040997821C1B1529006B5A6D /* CocoaMQTT+Frame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0409977B1C1B1529006B5A6D /* CocoaMQTT+Frame.swift */; };
+		040997841C1B1529006B5A6D /* CocoaMQTT+Frame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0409977B1C1B1529006B5A6D /* CocoaMQTT+Frame.swift */; };
+		040997851C1B1529006B5A6D /* CocoaMQTT+Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0409977C1C1B1529006B5A6D /* CocoaMQTT+Message.swift */; };
+		040997861C1B1529006B5A6D /* CocoaMQTT+Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0409977C1C1B1529006B5A6D /* CocoaMQTT+Message.swift */; };
+		040997881C1B1529006B5A6D /* CocoaMQTT+Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0409977C1C1B1529006B5A6D /* CocoaMQTT+Message.swift */; };
 		BFF666141F15C13D000F65AD /* CocoaAsyncSocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFF666121F15C13D000F65AD /* CocoaAsyncSocket.framework */; };
 		BFF666151F15C13D000F65AD /* SwiftyTimer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFF666131F15C13D000F65AD /* SwiftyTimer.framework */; };
+		F12C91A7223B53CE00DF2A1D /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = F12C91A6223B53CE00DF2A1D /* Enums.swift */; };
+		F12C91A8223B53CE00DF2A1D /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = F12C91A6223B53CE00DF2A1D /* Enums.swift */; };
+		F12C91A9223B53CE00DF2A1D /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = F12C91A6223B53CE00DF2A1D /* Enums.swift */; };
+		F12C91AB223B708200DF2A1D /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = F12C91AA223B708200DF2A1D /* Utils.swift */; };
+		F12C91AC223B708200DF2A1D /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = F12C91AA223B708200DF2A1D /* Utils.swift */; };
+		F12C91AD223B708200DF2A1D /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = F12C91AA223B708200DF2A1D /* Utils.swift */; };
+		F12C91AF223B741B00DF2A1D /* CocoaMQTT+Reader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F12C91AE223B741B00DF2A1D /* CocoaMQTT+Reader.swift */; };
+		F12C91B0223B741B00DF2A1D /* CocoaMQTT+Reader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F12C91AE223B741B00DF2A1D /* CocoaMQTT+Reader.swift */; };
+		F12C91B1223B741B00DF2A1D /* CocoaMQTT+Reader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F12C91AE223B741B00DF2A1D /* CocoaMQTT+Reader.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,10 +72,13 @@
 		040997711C1B1070006B5A6D /* CocoaMQTT.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CocoaMQTT.h; sourceTree = "<group>"; };
 		040997721C1B1070006B5A6D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0409977A1C1B1529006B5A6D /* CocoaMQTT.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaMQTT.swift; sourceTree = "<group>"; };
-		0409977B1C1B1529006B5A6D /* CocoaMQTTFrame.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaMQTTFrame.swift; sourceTree = "<group>"; };
-		0409977C1C1B1529006B5A6D /* CocoaMQTTMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaMQTTMessage.swift; sourceTree = "<group>"; };
+		0409977B1C1B1529006B5A6D /* CocoaMQTT+Frame.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CocoaMQTT+Frame.swift"; sourceTree = "<group>"; };
+		0409977C1C1B1529006B5A6D /* CocoaMQTT+Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CocoaMQTT+Message.swift"; sourceTree = "<group>"; };
 		BFF666121F15C13D000F65AD /* CocoaAsyncSocket.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CocoaAsyncSocket.framework; path = Carthage/Build/Mac/CocoaAsyncSocket.framework; sourceTree = "<group>"; };
 		BFF666131F15C13D000F65AD /* SwiftyTimer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyTimer.framework; path = Carthage/Build/Mac/SwiftyTimer.framework; sourceTree = "<group>"; };
+		F12C91A6223B53CE00DF2A1D /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
+		F12C91AA223B708200DF2A1D /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		F12C91AE223B741B00DF2A1D /* CocoaMQTT+Reader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CocoaMQTT+Reader.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -155,9 +167,12 @@
 		040997701C1B1070006B5A6D /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				F12C91AA223B708200DF2A1D /* Utils.swift */,
+				F12C91A6223B53CE00DF2A1D /* Enums.swift */,
 				0409977A1C1B1529006B5A6D /* CocoaMQTT.swift */,
-				0409977B1C1B1529006B5A6D /* CocoaMQTTFrame.swift */,
-				0409977C1C1B1529006B5A6D /* CocoaMQTTMessage.swift */,
+				F12C91AE223B741B00DF2A1D /* CocoaMQTT+Reader.swift */,
+				0409977B1C1B1529006B5A6D /* CocoaMQTT+Frame.swift */,
+				0409977C1C1B1529006B5A6D /* CocoaMQTT+Message.swift */,
 				040997791C1B14F0006B5A6D /* Supporting Files */,
 			);
 			path = Source;
@@ -538,9 +553,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F12C91AB223B708200DF2A1D /* Utils.swift in Sources */,
 				0409977D1C1B1529006B5A6D /* CocoaMQTT.swift in Sources */,
-				040997851C1B1529006B5A6D /* CocoaMQTTMessage.swift in Sources */,
-				040997811C1B1529006B5A6D /* CocoaMQTTFrame.swift in Sources */,
+				040997851C1B1529006B5A6D /* CocoaMQTT+Message.swift in Sources */,
+				F12C91A7223B53CE00DF2A1D /* Enums.swift in Sources */,
+				040997811C1B1529006B5A6D /* CocoaMQTT+Frame.swift in Sources */,
+				F12C91AF223B741B00DF2A1D /* CocoaMQTT+Reader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -556,9 +574,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F12C91AC223B708200DF2A1D /* Utils.swift in Sources */,
 				0409977E1C1B1529006B5A6D /* CocoaMQTT.swift in Sources */,
-				040997861C1B1529006B5A6D /* CocoaMQTTMessage.swift in Sources */,
-				040997821C1B1529006B5A6D /* CocoaMQTTFrame.swift in Sources */,
+				040997861C1B1529006B5A6D /* CocoaMQTT+Message.swift in Sources */,
+				F12C91A8223B53CE00DF2A1D /* Enums.swift in Sources */,
+				040997821C1B1529006B5A6D /* CocoaMQTT+Frame.swift in Sources */,
+				F12C91B0223B741B00DF2A1D /* CocoaMQTT+Reader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -573,9 +594,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F12C91AD223B708200DF2A1D /* Utils.swift in Sources */,
 				040997801C1B1529006B5A6D /* CocoaMQTT.swift in Sources */,
-				040997881C1B1529006B5A6D /* CocoaMQTTMessage.swift in Sources */,
-				040997841C1B1529006B5A6D /* CocoaMQTTFrame.swift in Sources */,
+				040997881C1B1529006B5A6D /* CocoaMQTT+Message.swift in Sources */,
+				F12C91A9223B53CE00DF2A1D /* Enums.swift in Sources */,
+				040997841C1B1529006B5A6D /* CocoaMQTT+Frame.swift in Sources */,
+				F12C91B1223B741B00DF2A1D /* CocoaMQTT+Reader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
