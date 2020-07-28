@@ -94,7 +94,7 @@ internal protocol CocoaMQTTClient {
     var cleanSession: Bool { get set }
     var keepAlive: UInt16 { get set }
     var willMessage: CocoaMQTTWill? { get set }
-    var presence: UInt8 { get set }
+    var presence: UInt8? { get set }
     
     func connect() -> Bool
     func disconnect()
@@ -149,7 +149,7 @@ public class CocoaMQTT: NSObject, CocoaMQTTClient, CocoaMQTTFrameBufferProtocol 
     public var secureMQTT = false
     public var cleanSession = true
     public var willMessage: CocoaMQTTWill?
-    public var presence: UInt8 = 1
+    public var presence: UInt8? = nil
     public weak var delegate: CocoaMQTTDelegate? {
         didSet { CocoaMQTTLogger.shared.delegate = delegate }
     }
@@ -301,7 +301,13 @@ public class CocoaMQTT: NSObject, CocoaMQTTClient, CocoaMQTTFrameBufferProtocol 
     
     public func ping() {
         printDebug("Ping")
-        send(CocoaMQTTFrame(type: CocoaMQTTFrameType.pingreq, payload: [self.presence]), tag: -0xC0)
+        
+        if let presence = self.presence {
+            send(CocoaMQTTFrame(type: CocoaMQTTFrameType.pingreq, payload: [presence]), tag: -0xC0)
+        } else {
+            send(CocoaMQTTFrame(type: CocoaMQTTFrameType.pingreq), tag: -0xC0)
+        }
+        
         self.delegate?.mqttDidPing(self)
     }
 
@@ -949,3 +955,4 @@ func printWarning(_ message: String) {
 func printError(_ message: String) {
     CocoaMQTTLogger.shared.log(level: .error, message: message)
 }
+
